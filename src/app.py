@@ -9,6 +9,16 @@ import os
 from dotenv import load_dotenv
 
 import pandas as pd
+import random
+
+
+import datetime
+from dateutil.relativedelta import relativedelta
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import LabelEncoder
 
 
 app = flask.Flask(__name__)
@@ -114,5 +124,168 @@ def getTopSongs():
         long_names.append(results_long[i]['name'])
 
     long_df = pd.DataFrame(long_id, index = long_names, columns = ['uri'])
+
+    #adding the scores
+    short_df['short_pts'] = 3
+    med_df['med_pts'] = 2
+    long_df['long_pts'] = 1
+
+    #returning the songs
+    return short_df, med_df, long_df
+
+
+def getTopArtists():
+    #top short term artists
+    artists_short = sp.current_user_top_artists(limit = 100, offset=0, time_range='short_term')['items']
+    artist_short_id = [] 
+    artist_short_names = []
+
+    for i in range(0, len(artists_short)):
+        #Removes the local tracks in your playlist if there are any
+        artist_short_id.append(artists_short[i]['id'])
+        artist_short_names.append(artists_short[i]['name'])
+    
+    #making df for short term top artists with points
+    short_tuples = list(zip(artist_short_id, artist_short_names))
+    artist_short_df = pd.DataFrame(short_tuples, columns=['artist_id','artist_name'])
+    artist_short_df['artist_short_pts'] = 3
+
+
+    #top medium term artists
+    artists_med = sp.current_user_top_artists(limit = 100, offset=0, time_range='medium_term')['items']
+    artist_med_id = [] 
+    artist_med_names = []
+
+    for i in range(0, len(artists_med)):
+        #Removes the local tracks in your playlist if there is any
+        artist_med_id.append(artists_med[i]['id'])
+        artist_med_names.append(artists_med[i]['name'])
+
+    #making df for medium term top artists with points
+    med_tuples = list(zip(artist_med_id, artist_med_names))
+    artist_med_df = pd.DataFrame(med_tuples, columns=['artist_id','artist_name'])
+    artist_med_df['artist_med_pts'] = 2
+
+
+    #top long term artists
+    artists_long = sp.current_user_top_artists(limit = 100, offset=0, time_range='long_term')['items']
+    artist_long_id = [] 
+    artist_long_names = []
+
+    for i in range(0, len(artists_long)):
+        #Removes the local tracks in your playlist if there is any
+        artist_long_id.append(artists_long[i]['id'])
+        artist_long_names.append(artists_long[i]['name'])
+    
+    #making df for long term top artists with points
+    long_tuples = list(zip(artist_long_id, artist_long_names))
+    artist_long_df = pd.DataFrame(long_tuples, columns = ['artist_id', 'artist_name'])
+    artist_long_df['artist_long_pts'] = 1
+
+    return artist_short_df, artist_med_df, artist_long_df
+
+def calcScores(tracks_df, artist_short_df, artist_med_df, artist_long_df, short_df, med_df, long_df):
+    #merging the artist dfs 
+    tracks_df = tracks_df.merge(artist_short_df, how = 'left', on = 'artist_id')
+    tracks_df = tracks_df.merge(artist_med_df, how = 'left', on = 'artist_id')
+    tracks_df = tracks_df.merge(artist_long_df, how = 'left', on = 'artist_id')
+
+    #merging the songs dfs
+    tracks_df = tracks_df.merge(short_df, how = 'left', on = 'uri')
+    tracks_df = tracks_df.merge(med_df, how = 'left', on = 'uri')
+    tracks_df = tracks_df.merge(long_df, how = 'left', on = 'uri')
+
+    #calculating time based scores
+    ct = datetime.date.today()
+    #last 0 - 3 months
+    three_months = ct - relativedelta(months = 3)
+    #last 6 months
+    six_months = ct - relativedelta(months = 6)
+    #last year
+    last_year = ct - relativedelta(years = 1)
+
+    #adding scores based on time added to library
+    tracks_df.loc[(tracks_df['added_time'].dt.date >= three_months), 'time_pts'] = 3
+    tracks_df.loc[(three_months > tracks_df['added_time'].dt.date) & (tracks_df['added_time'].dt.date  >= six_months), 'time_pts'] = 2
+    tracks_df.loc[(six_months > tracks_df['added_time'].dt.date) & (tracks_df['added_time'].dt.date >= last_year), 'time_pts'] = 1 
+
+    #calculating all scores
+    tracks_df['total_pts'] = tracks_df['short_pts'] + tracks_df['med_pts'] + tracks_df['long_pts'] + tracks_df['time_pts'] + tracks_df['artist_short_pts'] + tracks_df['artist_med_pts'] + tracks_df['artist_long_pts']
+    
+    #assigning target
+    tracks_df.loc[tracks_df['total_pts'] >= 3,'target'] = 1
+    tracks_df.loc[tracks_df['total_pts'] < 3,'target'] = 0
+
+    tracks_df = tracks_df.drop(columns = ['total_pts'])
+
+    #dropping unneeded features
+    tracks_df = tracks_df[['id', 'acousticness', 'danceability', 'duration_ms', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'speechiness', 'tempo', 'valence', 'total_pts']]
+
+    return tracks_df
+
+# This function will train a random forest classifier
+def trainModel(tracks_df):
+
+    #creating pipeline object
+    pipeline = Pipeline([('std_scaler', MinMaxScaler())])
+
+    #preparing data from training
+    X_train = tracks_df.drop(columns = ['id', 'target'])
+    X_train_scaled = pipeline.fit_transform(X_train)
+    y_train = tracks_df['target']
+    y_train_scaled = LabelEncoder().fit_transform(y_train)
+
+    classifier = RandomForestClassifier(n_estimators = 10, max_features='sqrt', max_depth = 13)
+    classifier.fit(X_train_scaled, y_train_scaled)
+
+    return classifier, pipeline
+
+def predictSongs(tracks_df, classifier, pipeline, username):
+    rec_tracks = []
+
+    ids = []
+
+    for x in range(5):
+        ids.append(random.choice(tracks_df.loc[tracks_df['target'] == 1]['id'].values.tolist()))
+
+    #getting recommendations from the spotify API
+    rec_tracks = sp.recommendations(seed_tracks=ids, limit=100)['tracks']
+
+    rec_track_ids = []
+    rec_track_names = []
+
+    for i in rec_tracks:
+        rec_track_ids.append(i['id'])
+        rec_track_names.append(i['name'])
+
+    rec_features = []
+    for i in range(0,len(rec_track_ids)):
+        rec_audio_features = sp.audio_features(rec_track_ids[i])
+        for track in rec_audio_features:
+            rec_features.append(track)
+
+    rec_tracks_df = pd.DataFrame(rec_features, index = rec_track_ids)
+
+    #keeping only relevant features
+    rec_tracks_df = rec_tracks_df[["id", "acousticness", "danceability", "duration_ms", 
+                         "energy", "instrumentalness",  "key", "liveness",
+                         "loudness", "speechiness", "tempo", "valence", 'uri']]
+
+
+    #preparing the tracks for prediction
+    X_rec_tracks = rec_tracks_df.drop(columns = ['id', 'uri'])
+    X_rec_scaled = pipeline.fit_transform(X_rec_tracks)
+
+    rec_predict = classifier.predict(X_rec_scaled)
+
+    #adding prediction to the DF
+    rec_tracks_df['predict'] = rec_predict
+    final_recs = rec_tracks_df.loc[rec_tracks_df['predict'] == 1]['id'].values.tolist()
+
+    #creating playlist
+    recs_playlist = sp.user_playlist_create(username, name= 'Python Recs')
+
+    #adding songs to playlist
+    sp.user_playlist_add_tracks(username, recs_playlist['id'], final_recs)
 
 app.run()

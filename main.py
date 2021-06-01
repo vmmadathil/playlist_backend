@@ -1,5 +1,8 @@
 #from src.playlistmaker import getTopSongs
 import flask
+
+from flask import render_template
+
 from playlistmaker import *
 
 import spotipy
@@ -17,7 +20,8 @@ app.config["DEBUG"] = True
 
 @app.route('/', methods=['GET'])
 def home():
-    return "<h1>Travel Playlist Creator</h1><p>This site is a prototype API for a service that will create personalized playlists for users.</p>"
+    #return "<h1>Travel Playlist Creator</h1><p>This site is a prototype API for a service that will create personalized playlists for users.</p>"
+    return render_template('about.html')
     
 @app.route('/authorize/<username>', methods=['GET'])
 def authorize(username):

@@ -31,6 +31,7 @@
 
 
 {% block javascripts %}
+
 <script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
 
 <script>
@@ -41,7 +42,10 @@
         cursor: ''
     });
 
-    typewriter.typeString('<h2>Looking at your library....</h2>')
+    typewriter.typeString('<h2>Connecting to Spotify</h2>')
+        .pauseFor(2750)
+        .deleteAll()
+        .typeString('<h2>Looking at your library....</h2>')
         .pauseFor(2750)
         .deleteAll()
         .typeString('<h2>Your music taste is ...uh... interesting</h2>')
@@ -50,12 +54,42 @@
         .typeString('<h2>Determining your favorite songs</h2>')
         .pauseFor(2750)
         .deleteAll()
-        .typeString('<h2>lol...nice music</h2>')
+        .typeString('<h2>Looking at your favorite artists</h2>')
+        .pauseFor(2750)
+        .deleteAll()
+        .typeString('<h2>lol... </h2>')
         .pauseFor(2750)
         .deleteAll()
         .typeString('<h2>Training the model</h2>')
         .pauseFor(2750)
         .deleteAll()
+        .typeString('<h2>Finding new songs for you</h2>')
+        .pauseFor(2750)
+        .deleteAll()
         .start();
 </script>
+
+<script>
+var request = new XMLHttpRequest();
+request.open('POST', '/create');
+
+request.onload = function() {
+  if (request.status === 200 && request.responseText === 'done') {
+    // long process finished successfully, redirect user
+    window.location = '/success.html';
+  } else {
+    // ops, we got an error from the server
+    alert('Something went wrong.');
+  }
+};
+
+request.onerror = function() {
+  // ops, we got an error trying to talk to the server
+  alert('Something went wrong.');
+};
+
+request.send();
+
+</script>
+
 {% endblock javascripts %}

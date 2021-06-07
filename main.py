@@ -1,7 +1,7 @@
 #from src.playlistmaker import getTopSongs
 import flask
 
-from flask import render_template, redirect, url_for, request
+from flask import render_template, redirect, url_for, request, session
 
 from playlistmaker import *
 
@@ -12,21 +12,22 @@ import spotipy.util as util
 from dotenv import load_dotenv
 import os
 
-token = ''
+env_path = ('../.env')
+load_dotenv(dotenv_path=env_path)
+SECRET = os.getenv('MY_SECRET')
+
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
+app.secret_key = SECRET
+
 
 @app.route('/', methods=['POST', 'GET'])
 def home():
-    #return "<h1>Travel Playlist Creator</h1><p>This site is a prototype API for a service that will create personalized playlists for users.</p>"
     return render_template('about.html')
 
-@app.route('/details', methods=['GET'])
-def details():
-    return render_template('details.html')
-    
+
 
 @app.route('/authorize', methods = ['POST'])
 def authorize():
@@ -34,8 +35,6 @@ def authorize():
         responses = request.form
         username = responses.get('usname')
 
-        env_path = ('../.env')
-        load_dotenv(dotenv_path=env_path)
 
         SPOTIFY_CLIENT = os.getenv('SPOTIFY_CLIENT')
         SPOTIFY_SECRET = os.getenv('SPOTIFY_SECRET')
@@ -52,38 +51,48 @@ def authorize():
 
         if token:
             #return 'Successful Auth', token
-            return render_template('loading.html')
-        else:
+            session['username'] = username
+            session['token'] = token
+            return redirect(url_for('create'))
+        else: 
             return("Can't get token for", username)
          
     
-@app.route('/create/<username>', methods=['GET'])
-def create(username, token):
+@app.route('/create', methods=['GET', 'POST'])
+def create():
 
-    #global token
-    print(token)
-    
-    sp = spotipy.Spotify(auth=token)
+    if request.method == 'GET':
+        return render_template('loading.html')
 
-    library_df = getLibrary(sp)
-    print('got library')
+    if request.method == 'POST':
 
-    short_df, med_df, long_df = getTopSongs(sp)
-    print('got top songs')
+        username = session['username']
+        token = session['token']
+        #global token
+        print(token)
+        print(username)
+        
+        sp = spotipy.Spotify(auth=token)
 
-    artist_short_df, artist_med_df, artist_long_df = getTopArtists(sp)
-    print('got top artists')
+        library_df = getLibrary(sp)
+        print('got library')
 
-    tracks_df = calcScores(library_df, artist_short_df, artist_med_df, artist_long_df, short_df, med_df, long_df)
-    print('calculated scores')
+        short_df, med_df, long_df = getTopSongs(sp)
+        print('got top songs')
 
-    classifer, pipeline = trainModel(tracks_df)
-    print('trained model')
+        artist_short_df, artist_med_df, artist_long_df = getTopArtists(sp)
+        print('got top artists')
 
-    predictSongs(tracks_df, classifer, pipeline, username, sp)
-    print('made playlist')
+        tracks_df = calcScores(library_df, artist_short_df, artist_med_df, artist_long_df, short_df, med_df, long_df)
+        print('calculated scores')
 
-    return 'Made Playlist'
+        classifer, pipeline = trainModel(tracks_df)
+        print('trained model')
+
+        predictSongs(tracks_df, classifer, pipeline, username, sp)
+        print('made playlist')
+
+        return 'done'
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)

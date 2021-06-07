@@ -18,9 +18,9 @@
                   <div class="col-12 col-md-7 col-lg-6 text-center text-md-left">
                         <h1 class="display-2 mb-4">Need A <br class="d-none d-md-inline">New Playlist? </h1>
                         <p class="lead mb-4 text-muted"> A completely new Spotify playlist, made just for you</p>
-                        <form>
-                            <label for="validationCustom03" class="form-label">Spotify Username</label>
-                            <input type="text" class="form-control" id="validationCustom03" required>
+                        <form action="/authorize" method = "POST">
+                            <label for="username" class="form-label">Spotify Username</label>
+                            <input type="text" class="form-control" id="username" name='usname' required>
                             <div class="invalid-feedback">
                               Please provide a username.
                             </div> 

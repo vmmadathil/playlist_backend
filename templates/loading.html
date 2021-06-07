@@ -1,0 +1,61 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Freelancer Page {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<main>
+    <section class="section-header bg-secondary text-white" height = '100%'>
+        <div class="container">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-12 text-center text-md"></div>
+                <div class='alert alert-danger'> Don't close this tab! We are making your playlist!</div>
+                <div id='body'>
+                </div>
+            </div>
+        </div>
+        </div>
+
+    </section>
+
+</main>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+
+
+
+{% block javascripts %}
+<script src="https://unpkg.com/typewriter-effect@latest/dist/core.js"></script>
+
+<script>
+    var app = document.getElementById('body');
+
+    var typewriter = new Typewriter(app, {
+        loop: true,
+        cursor: ''
+    });
+
+    typewriter.typeString('<h2>Looking at your library....</h2>')
+        .pauseFor(2750)
+        .deleteAll()
+        .typeString('<h2>Your music taste is ...uh... interesting</h2>')
+        .pauseFor(2750)
+        .deleteAll()
+        .typeString('<h2>Determining your favorite songs</h2>')
+        .pauseFor(2750)
+        .deleteAll()
+        .typeString('<h2>lol...nice music</h2>')
+        .pauseFor(2750)
+        .deleteAll()
+        .typeString('<h2>Training the model</h2>')
+        .pauseFor(2750)
+        .deleteAll()
+        .start();
+</script>
+{% endblock javascripts %}

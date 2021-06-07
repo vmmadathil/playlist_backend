@@ -24776,6 +24776,7 @@ textarea.form-control-lg {
  */
 .section {
     position: relative;
+    height:100%;
     padding-top: 3rem;
     padding-bottom: 3rem;
 }
@@ -24789,6 +24790,7 @@ textarea.form-control-lg {
 @media (min-width: 576px) {
     .section {
         position: relative;
+        height:100%;
         padding-top: 6rem;
         padding-bottom: 6rem;
     }

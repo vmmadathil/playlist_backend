@@ -1,7 +1,7 @@
 #from src.playlistmaker import getTopSongs
 import flask
 
-from flask import render_template
+from flask import render_template, redirect, url_for, request
 
 from playlistmaker import *
 
@@ -18,7 +18,7 @@ app = flask.Flask(__name__)
 app.config["DEBUG"] = True
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['POST', 'GET'])
 def home():
     #return "<h1>Travel Playlist Creator</h1><p>This site is a prototype API for a service that will create personalized playlists for users.</p>"
     return render_template('about.html')
@@ -28,35 +28,39 @@ def details():
     return render_template('details.html')
     
 
-@app.route('/authorize/<username>', methods=['GET'])
-def authorize(username):
-    env_path = ('../.env')
-    load_dotenv(dotenv_path=env_path)
+@app.route('/authorize', methods = ['POST'])
+def authorize():
+    if request.method == 'POST':
+        responses = request.form
+        username = responses.get('usname')
 
-    SPOTIFY_CLIENT = os.getenv('SPOTIFY_CLIENT')
-    SPOTIFY_SECRET = os.getenv('SPOTIFY_SECRET')
-    USERNAME = username
-    redirect_uri = 'http://localhost:8888/callback/'
+        env_path = ('../.env')
+        load_dotenv(dotenv_path=env_path)
 
-    global token
+        SPOTIFY_CLIENT = os.getenv('SPOTIFY_CLIENT')
+        SPOTIFY_SECRET = os.getenv('SPOTIFY_SECRET')
+        redirect_uri = 'http://localhost:8888/callback/'
 
-    #authorizations
-    scope = 'user-library-read user-top-read playlist-modify-public playlist-read-private'
+        global token
 
-    credentials_manager = SpotifyClientCredentials(client_id=SPOTIFY_CLIENT, client_secret=SPOTIFY_SECRET) 
-    sp = spotipy.Spotify(client_credentials_manager=credentials_manager)
-    token = util.prompt_for_user_token(username, scope, SPOTIFY_CLIENT, SPOTIFY_SECRET, redirect_uri)
+        #authorizations
+        scope = 'user-library-read user-top-read playlist-modify-public playlist-read-private'
 
-    if token:
-        return 'Successful Auth', token
-    else:
-        return("Can't get token for", username)
+        credentials_manager = SpotifyClientCredentials(client_id=SPOTIFY_CLIENT, client_secret=SPOTIFY_SECRET) 
+        #sp = spotipy.Spotify(client_credentials_manager=credentials_manager)
+        token = util.prompt_for_user_token(username, scope, SPOTIFY_CLIENT, SPOTIFY_SECRET, redirect_uri)
+
+        if token:
+            #return 'Successful Auth', token
+            return render_template('loading.html')
+        else:
+            return("Can't get token for", username)
          
     
 @app.route('/create/<username>', methods=['GET'])
-def create(username):
+def create(username, token):
 
-    global token
+    #global token
     print(token)
     
     sp = spotipy.Spotify(auth=token)

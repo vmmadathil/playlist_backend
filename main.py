@@ -22,7 +22,12 @@ app.config["DEBUG"] = True
 def home():
     #return "<h1>Travel Playlist Creator</h1><p>This site is a prototype API for a service that will create personalized playlists for users.</p>"
     return render_template('about.html')
+
+@app.route('/details', methods=['GET'])
+def details():
+    return render_template('details.html')
     
+
 @app.route('/authorize/<username>', methods=['GET'])
 def authorize(username):
     env_path = ('../.env')

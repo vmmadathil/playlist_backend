@@ -1,17 +1,18 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} UI Cards {% endblock %} 
+{% block title %} UI Cards {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-    <main>
-        
-        {% include 'includes/preloader.html' %}
+<main>
 
-        <!-- Hero -->
+    {% include 'includes/preloader.html' %}
+
+    <!-- Hero -->
+    <section class="section-header bg-secondary text-black" height='100%'>
         <div class="section-header pb-6 bg-primary text-white">
             <div class="container">
                 <div class="row justify-content-center">
@@ -22,31 +23,49 @@
                             Successfully created and added your playlist to your library.
                         </div>
                         <form action="/">
-                        <button class="btn btn-tertiary" type="submit"> Start Over <span class="ms-2"><span class="fas fa-arrow-right"></span></span> </button>
+                            <button class="btn btn-tertiary" type="submit"> Start Over <span class="ms-2"><span
+                                        class="fas fa-arrow-right"></span></span> </button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- End of Hero -->
-        
-        <!--End of Title section-->
+    </section>
+    <!-- End of Hero -->
+
+    <!--End of Title section-->
+    <section class="section-header bg-secondary text-black" height='100%'>
         <div class="section section-md">
-            <div class="container">                 
-                    <div class="col-12 mt-5">
-                        <div class="card shadow mb-6">
-                            <div class="card-body px-5 py-5 text-center text-md-left">
-                                <div class="row align-items-center">
-                                    <iframe src="https://open.spotify.com/embed/playlist/{{ value }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
-                                </div>
+            <div class="container">
+                <div class="col-12 mt-5">
+                    <div class="card shadow mb-6">
+                        <div class="card-body px-5 py-5 text-center text-md-left">
+                            <div class="row align-items-center">
+                                <iframe src="https://open.spotify.com/embed/playlist/{{ value }}" width="300"
+                                    height="380" frameborder="0" allowtransparency="true"
+                                    allow="encrypted-media"></iframe>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
+    </section>
 
-    </main>
+    <div class="container">
+        <hr class="bg-secondary my-3 my-lg-5">
+        <div class="row">
+            <div class="col mb-md-0">
+                <div class="d-flex text-center justify-content-center align-items-center" role="contentinfo">
+                    <p class="fw-normal font-small mb-0">
+                        &copy; Made with <span style="color: #e25555;">&#9829;</span> by Visakh Madathil.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 
 {% endblock content %}
 

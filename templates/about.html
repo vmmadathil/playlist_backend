@@ -1,81 +1,87 @@
 {% extends "layouts/base.html" %}
 
-{% block title %} About {% endblock %} 
+{% block title %} About {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
 
-    <main>
-        
-        {% include 'includes/preloader.html' %}
+<main>
 
-        <!-- Hero -->
-        <section class="section-header bg-secondary text-white">
-            <div class="container">
-               <div class="row justify-content-between align-items-center">
-                  <div class="col-12 col-md-7 col-lg-6 text-center text-md-left">
-                        <h1 class="display-2 mb-4"> Need A <br class="d-none d-md-inline">New Playlist? </h1>
-                        <p class="lead mb-4 text-muted"> A completely new Spotify playlist, made just for you</p>
-                        <form action="/authorize" method = "POST">
-                            <label for="username" class="form-label">Spotify Username</label>
-                            <input type="text" class="form-control" id="username" name='usname' required>
-                            <div class="invalid-feedback">
-                              Please provide a username.
-                            </div> 
-                            <p> </p>
-                            <button class="btn btn-tertiary" type="submit"> Create Playlist <span class="ms-2"><span class="fas fa-arrow-right"></span></span> </button>
-                        </form>
-                    </div>
-                    
-                  <div class="col-12 col-md-5 d-none d-md-block text-center"><img src="/static/assets/img/illustrations/music_listening.svg" alt=""></div>
-               </div>
+  {% include 'includes/preloader.html' %}
+
+  <!-- Hero -->
+  <section class="section-header bg-secondary text-white">
+    <div class="container">
+      <div class="row justify-content-between align-items-center">
+        <div class="col-12 col-md-7 col-lg-6 text-center text-md-left">
+          <h1 class="display-2 mb-4"> Need A <br class="d-none d-md-inline">New Playlist? </h1>
+          <p class="lead mb-4 text-muted"> A completely new Spotify playlist, made just for you</p>
+          <form action="/authorize" method="POST">
+            <label for="username" class="form-label">Spotify Username</label>
+            <input type="text" class="form-control" id="username" name='usname' required>
+            <div class="invalid-feedback">
+              Please provide a username.
             </div>
-            <figure class="position-absolute bottom-0 left-0 w-100 d-none d-md-block mb-n2">
-               <svg class="fill-white" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1920 43.4" style="enable-background:new 0 0 1920 43.4;" xml:space="preserve">
-                  <path d="M0,23.3c0,0,405.1-43.5,697.6,0c316.5,1.5,108.9-2.6,480.4-14.1c0,0,139-12.2,458.7,14.3 c0,0,67.8,19.2,283.3-22.7v35.1H0V23.3z"></path>
-               </svg>
-            </figure>
-        </section>
-        <div class="container">
-            <hr class="bg-secondary my-3 my-lg-5">
-            <div class="row">
-                <div class="col mb-md-0">
-                    <div class="d-flex text-center justify-content-center align-items-center" role="contentinfo">
-                        <p class="fw-normal font-small mb-0">
-                            &copy; Made with <span style="color: #e25555;">&#9829;</span> by Visakh Madathil.
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <p> </p>
+            <button class="btn btn-tertiary" type="submit"> Create Playlist <span class="ms-2"><span
+                  class="fas fa-arrow-right"></span></span> </button>
+          </form>
         </div>
 
-    </main>
+        <div class="col-12 col-md-5 d-none d-md-block text-center"><img
+            src="/static/assets/img/illustrations/music_listening.svg" alt=""></div>
+      </div>
+    </div>
+    <figure class="position-absolute bottom-0 left-0 w-100 d-none d-md-block mb-n2">
+      <svg class="fill-white" version="1.1" xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1920 43.4"
+        style="enable-background:new 0 0 1920 43.4;" xml:space="preserve">
+        <path
+          d="M0,23.3c0,0,405.1-43.5,697.6,0c316.5,1.5,108.9-2.6,480.4-14.1c0,0,139-12.2,458.7,14.3 c0,0,67.8,19.2,283.3-22.7v35.1H0V23.3z">
+        </path>
+      </svg>
+    </figure>
+  </section>
+  <div class="container">
+    <hr class="bg-secondary my-3 my-lg-5">
+    <div class="row">
+      <div class="col mb-md-0">
+        <div class="d-flex text-center justify-content-center align-items-center" role="contentinfo">
+          <p class="fw-normal font-small mb-0">
+            &copy; Made with <span style="color: #e25555;">&#9829;</span> by Visakh Madathil.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}{% endblock javascripts %}
 <script>
-(function () {
-  'use strict'
+  (function () {
+    'use strict'
 
-  // Fetch all the forms we want to apply custom Bootstrap validation styles to
-  var forms = document.querySelectorAll('.needs-validation')
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    var forms = document.querySelectorAll('.needs-validation')
 
-  // Loop over them and prevent submission
-  Array.prototype.slice.call(forms)
-    .forEach(function (form) {
-      form.addEventListener('submit', function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+      .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
 
-        form.classList.add('was-validated')
-      }, false)
-    })
-})()
+          form.classList.add('was-validated')
+        }, false)
+      })
+  })()
 
 </script>

@@ -8,13 +8,19 @@
 {% block content %}
 
 <main>
-    <section class="section-header bg-secondary text-white" height = '100%'>
+    <section class="section-header bg-secondary text-black" height = '100%'>
         <div class="container">
             <div class="row justify-content-between align-items-center">
                 <div class="col-12 text-center text-md"></div>
-                <div class='alert alert-danger'> Don't close this tab! We are making your playlist!</div>
-                <div id='body'>
+                <div class="card shadow mb-6">
+                    <div class="card-body px-5 py-5 text-center text-md-left">
+                        <div class="row align-items-center">
+                            <div id='body'>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                <div class='alert alert-danger'> Depending on your library, it might take a few minutes to make your playlist. Check back often.</div>
             </div>
         </div>
         </div>
@@ -48,27 +54,31 @@
         .typeString('<h2>Looking at your library....</h2>')
         .pauseFor(3000)
         .deleteAll()
-        .typeString('<h2>Your music taste is ...uh... interesting</h2>')
+        .typeString('<h2>Your music taste is ...uh... interesting to say the least</h2>')
         .pauseFor(3000)
         .deleteAll()
         .typeString('<h2>Determining your favorite songs</h2>')
         .pauseFor(3000)
-        .typeString('... nice...')
+        .deleteAll()
+        .typeString('<h2> ... nice... <h2>')
         .pauseFor(3000)
         .deleteAll()
-        .typeString('<h2>Looking at your favorite artists</h2>')
+        .typeString('<h2>Determining your favorite artists</h2>')
         .pauseFor(3000)
         .deleteAll()
         .typeString('<h2>lol... </h2>')
         .pauseFor(3000)
         .deleteAll()
-        .typeString('<h2>Training the model</h2>')
+        .typeString('<h2>Training the our song picking model</h2>')
         .pauseFor(3000)
         .deleteAll()
-        .typeString('<h2>Finding new songs for you</h2>')
+        .typeString('<h2>Finding some new songs for you</h2>')
         .pauseFor(3000)
         .deleteAll()
         .typeString("<h2>I know this is taking a while but you try sifting through Spotify's library</h2>")
+        .pauseFor(3000)
+        .deleteAll()
+        .typeString("<h2>I'm just some code, don't get mad at me</h2>")
         .pauseFor(3000)
         .deleteAll()
         .start();
@@ -81,7 +91,7 @@ request.open('POST', '/create');
 request.onload = function() {
   if (request.status === 200 && request.responseText === 'done') {
     // long process finished successfully, redirect user
-    window.location = '/success.html';
+    window.location = '/success';
   } else {
     // ops, we got an error from the server
     alert('Something went wrong.');

@@ -19,6 +19,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import LabelEncoder
 
+import random
 
 
 
@@ -267,8 +268,18 @@ def predictSongs(tracks_df, classifier, pipeline, username, sp):
     rec_tracks_df['predict'] = rec_predict
     final_recs = rec_tracks_df.loc[rec_tracks_df['predict'] == 1]['id'].values.tolist()
 
+
+    #picking a random name for the playlist
+    adj = ['utopian', 'brave', 'sweltering', 'tested', 'therapeutic', 'common', 'irritating', 'smart', 'purring', 'smelly', 'abiding', 'unequaled', 'descriptive', 'real', 'exclusive', 'righteous', 'devilish', 'watery', 'graceful', 'medical', 'ethereal', 'dramatic']
+    noun = ['sector', 'city', 'cookie', 'country', 'drawing', 'dealer', 'river', 'football', 'nature', 'volume', 'bedroom', 'engine', 'instance', 'highway', 'housing', 'stranger','income', 'friendship', 'drama', 'message', 'outcome']
+
+    plname = random.choice(adj) + ' ' + random.choice(noun)
+
     #creating playlist
-    recs_playlist = sp.user_playlist_create(username, name= 'Python Recs II')
+    recs_playlist = sp.user_playlist_create(username, name= plname)
 
     #adding songs to playlist
     sp.user_playlist_add_tracks(username, recs_playlist['id'], final_recs)
+
+    #returning playlist ID
+    return recs_playlist['id']

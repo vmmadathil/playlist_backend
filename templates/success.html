@@ -1,1 +1,51 @@
-<h1> Done! </h1>
+{% extends "layouts/base.html" %}
+
+{% block title %} UI Cards {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <main>
+        
+        {% include 'includes/preloader.html' %}
+
+        <!-- Hero -->
+        <div class="section-header pb-6 bg-primary text-white">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-md-8 text-center">
+                        <h1 class="display-3 mb-4">Your Playlist is Ready</h1>
+                        <div class="alert bg-success align-items-center" role="alert">
+                            <span class="fas fa-info-circle"></span>
+                            Successfully created and added your playlist to your library.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End of Hero -->
+        
+        <!--End of Title section-->
+        <div class="section section-md">
+            <div class="container">                 
+                    <div class="col-12 mt-5">
+                        <div class="card shadow mb-6">
+                            <div class="card-body px-5 py-5 text-center text-md-left">
+                                <div class="row align-items-center">
+                                    <iframe src="https://open.spotify.com/embed/playlist/{{ value }}" width="300" height="380" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

@@ -89,10 +89,18 @@ def create():
         classifer, pipeline = trainModel(tracks_df)
         print('trained model')
 
-        predictSongs(tracks_df, classifer, pipeline, username, sp)
+        session['playlist_id'] = predictSongs(tracks_df, classifer, pipeline, username, sp)
         print('made playlist')
 
         return 'done'
+
+@app.route('/success', methods=['GET', 'POST'])
+def success():
+    id = session['playlist_id']
+
+    id = '3Jqi5SzsaASC0wLgCOLBQp'
+    return render_template('success.html', value = id)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080, debug=True)

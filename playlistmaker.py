@@ -272,7 +272,6 @@ def predictSongs(tracks_df, classifier, pipeline, username, sp):
     #picking a random name for the playlist
     adj = ['utopian', 'brave', 'sweltering', 'tested', 'therapeutic', 'common', 'irritating', 'smart', 'purring', 'smelly', 'abiding', 'unequaled', 'descriptive', 'real', 'exclusive', 'righteous', 'devilish', 'watery', 'graceful', 'medical', 'ethereal', 'dramatic']
     noun = ['sector', 'city', 'cookie', 'country', 'drawing', 'dealer', 'river', 'football', 'nature', 'volume', 'bedroom', 'engine', 'instance', 'highway', 'housing', 'stranger','income', 'friendship', 'drama', 'message', 'outcome']
-
     plname = random.choice(adj) + ' ' + random.choice(noun)
 
     #creating playlist

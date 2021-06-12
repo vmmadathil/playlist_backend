@@ -134,7 +134,7 @@ def getTopArtists(sp):
     #making df for short term top artists with points
     short_tuples = list(zip(artist_short_id, artist_short_names))
     artist_short_df = pd.DataFrame(short_tuples, columns=['artist_id','artist_name'])
-    artist_short_df['artist_short_pts'] = 3
+    artist_short_df['artist_short_pts'] = 2
 
 
     #top medium term artists
@@ -150,7 +150,7 @@ def getTopArtists(sp):
     #making df for medium term top artists with points
     med_tuples = list(zip(artist_med_id, artist_med_names))
     artist_med_df = pd.DataFrame(med_tuples, columns=['artist_id','artist_name'])
-    artist_med_df['artist_med_pts'] = 2
+    artist_med_df['artist_med_pts'] = 1
 
 
     #top long term artists
@@ -166,7 +166,7 @@ def getTopArtists(sp):
     #making df for long term top artists with points
     long_tuples = list(zip(artist_long_id, artist_long_names))
     artist_long_df = pd.DataFrame(long_tuples, columns = ['artist_id', 'artist_name'])
-    artist_long_df['artist_long_pts'] = 1
+    artist_long_df['artist_long_pts'] = .5
 
     #returning the top artists
     return artist_short_df, artist_med_df, artist_long_df
@@ -193,16 +193,16 @@ def calcScores(library_df, artist_short_df, artist_med_df, artist_long_df, short
     last_year = ct - relativedelta(years = 1)
 
     #adding scores based on time added to library
-    library_df.loc[(library_df['added_time'].dt.date >= three_months), 'time_pts'] = 3
-    library_df.loc[(three_months > library_df['added_time'].dt.date) & (library_df['added_time'].dt.date  >= six_months), 'time_pts'] = 2
-    library_df.loc[(six_months > library_df['added_time'].dt.date) & (library_df['added_time'].dt.date >= last_year), 'time_pts'] = 1 
+    library_df.loc[(library_df['added_time'].dt.date >= three_months), 'time_pts'] = 2
+    library_df.loc[(three_months > library_df['added_time'].dt.date) & (library_df['added_time'].dt.date  >= six_months), 'time_pts'] = 1.5
+    library_df.loc[(six_months > library_df['added_time'].dt.date) & (library_df['added_time'].dt.date >= last_year), 'time_pts'] = 1
 
     #calculating all scores
     library_df['total_pts'] = library_df['short_pts'] + library_df['med_pts'] + library_df['long_pts'] + library_df['time_pts'] + library_df['artist_short_pts'] + library_df['artist_med_pts'] + library_df['artist_long_pts']
     
     #assigning target
-    library_df.loc[library_df['total_pts'] >= 3,'target'] = 1
-    library_df.loc[library_df['total_pts'] < 3,'target'] = 0
+    library_df.loc[library_df['total_pts'] >= 4,'target'] = 1
+    library_df.loc[library_df['total_pts'] < 4,'target'] = 0
 
     #dropping unneeded features
     tracks_df = library_df[['id', 'acousticness', 'danceability', 'duration_ms', 'energy', 'instrumentalness', 'key', 'liveness', 'loudness', 'speechiness', 'tempo', 'valence', 'target']]

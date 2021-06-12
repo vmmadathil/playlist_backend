@@ -12,15 +12,20 @@
     {% include 'includes/preloader.html' %}
 
     <!-- Hero -->
-    <section class="section-header bg-secondary text-black" height='100%'>
-        <div class="section-header pb-6 bg-primary text-white">
+        <div class="section-header pb-6 bg-secondary text-white">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-8 text-center">
-                        <h1 class="display-3 mb-4">Your Playlist is Ready</h1>
                         <div class="alert bg-success align-items-center" role="alert">
                             <span class="fas fa-info-circle"></span>
                             Successfully created and added your playlist to your library.
+                        </div>
+                        <div class="card-body px-5 py-5 text-center text-md-left">
+                            <div class="row align-items-center">
+                                <iframe src="https://open.spotify.com/embed/playlist/{{ value }}" width="300"
+                                    height="380" frameborder="0" allowtransparency="true"
+                                    allow="encrypted-media"></iframe>
+                            </div>
                         </div>
                         <form action="/">
                             <button class="btn btn-tertiary" type="submit"> Start Over <span class="ms-2"><span
@@ -30,28 +35,7 @@
                 </div>
             </div>
         </div>
-    </section>
     <!-- End of Hero -->
-
-    <!--End of Title section-->
-    <section class="section-header bg-secondary text-black" height='100%'>
-        <div class="section section-md">
-            <div class="container">
-                <div class="col-12 mt-5">
-                    <div class="card shadow mb-6">
-                        <div class="card-body px-5 py-5 text-center text-md-left">
-                            <div class="row align-items-center">
-                                <iframe src="https://open.spotify.com/embed/playlist/{{ value }}" width="300"
-                                    height="380" frameborder="0" allowtransparency="true"
-                                    allow="encrypted-media"></iframe>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-    </section>
 
     <div class="container">
         <hr class="bg-secondary my-3 my-lg-5">
